@@ -21,6 +21,7 @@ import (
 	_ "github.com/mattermost/gosaml2"
 	_ "github.com/mattermost/ldap"
 	_ "github.com/mattermost/rsc/qr"
+	_ "github.com/mkraft/ifacemaker/maker"
 	_ "github.com/prometheus/client_golang/prometheus"
 	_ "github.com/prometheus/client_golang/prometheus/promhttp"
 	_ "github.com/tylerb/graceful"

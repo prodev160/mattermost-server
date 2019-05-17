@@ -58,10 +58,11 @@ require (
 	github.com/miekg/dns v1.1.27 // indirect
 	github.com/minio/minio-go/v6 v6.0.45
 	github.com/mitchellh/go-testing-interface v1.0.0 // indirect
-	github.com/muesli/smartcrop v0.3.0 // indirect
-	github.com/oklog/run v1.1.0 // indirect
-	github.com/olekukonko/tablewriter v0.0.4 // indirect
-	github.com/olivere/elastic v6.2.27+incompatible // indirect
+	github.com/mkraft/ifacemaker v0.0.0-20190519133746-5307a9287eec
+	github.com/olekukonko/tablewriter v0.0.1 // indirect
+	github.com/onsi/ginkgo v1.8.0 // indirect
+	github.com/onsi/gomega v1.5.0 // indirect
+	github.com/pascaldekloe/goe v0.1.0 // indirect
 	github.com/pborman/uuid v1.2.0
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/pkg/errors v0.9.1
