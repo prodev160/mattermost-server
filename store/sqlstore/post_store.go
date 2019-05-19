@@ -1433,6 +1433,26 @@ func (s *SqlPostStore) GetParentsForExportAfter(limit int, afterId string) ([]*m
 		if len(rootIds) == 0 {
 			return postsForExport, nil
 		}
+	})
+}
+
+func (s *SqlPostStore) GetDirectPostParentsForExportAfter(limit int, afterId string) store.StoreChannel {
+	return store.Do(func(result *store.StoreResult) {
+		query := s.GetQueryBuilder().
+			Select("p.*", "Users.Username as User").
+			From("Posts p").
+			Join("Channels ON p.ChannelId = Channels.Id").
+			Join("Users ON p.UserId = Users.Id").
+			Where(sq.And{
+				sq.Gt{"p.Id": afterId},
+				sq.Eq{"p.ParentId": string("")},
+				sq.Eq{"p.DeleteAt": int(0)},
+				sq.Eq{"Channels.DeleteAt": int(0)},
+				sq.Eq{"Users.DeleteAt": int(0)},
+				sq.Eq{"Channels.Type": []string{"D", "G"}},
+			}).
+			OrderBy("p.Id").
+			Limit(uint64(limit))
 
 		keys, params := MapStringsToQueryParams(rootIds, "PostId")
 		_, err = s.GetSearchReplica().Select(&postsForExport, `
@@ -1460,11 +1480,26 @@ func (s *SqlPostStore) GetParentsForExportAfter(limit int, afterId string) ([]*m
 				nil, err.Error(), http.StatusInternalServerError)
 		}
 
-		if len(postsForExport) == 0 {
-			// All of the posts were in channels or teams that were deleted.
-			// Update the afterId and try again.
-			afterId = rootIds[len(rootIds)-1]
-			continue
+		var posts []*model.DirectPostForExport
+		if _, err = s.GetReplica().Select(&posts, queryString, args...); err != nil {
+			result.Err = model.NewAppError("SqlPostStore.GetDirectPostParentsForExportAfter", "store.sql_post.get_direct_posts.app_error", nil, err.Error(), http.StatusInternalServerError)
+		}
+		var channelIds []string
+		for _, post := range posts {
+			channelIds = append(channelIds, post.ChannelId)
+		}
+		query = s.GetQueryBuilder().
+			Select("u.Username as Username, ChannelId, UserId, cm.Roles as Roles, LastViewedAt, MsgCount, MentionCount, cm.NotifyProps as NotifyProps, LastUpdateAt, SchemeUser, SchemeAdmin, (SchemeGuest IS NOT NULL AND SchemeGuest) as SchemeGuest").
+			From("ChannelMembers cm").
+			Join("Users u ON ( u.Id = cm.UserId )").
+			Where(sq.Eq{
+				"cm.ChannelId": channelIds,
+			})
+
+		queryString, args, err = query.ToSql()
+		if err != nil {
+			result.Err = model.NewAppError("SqlPostStore.GetDirectPostParentsForExportAfter", "store.sql_post.get_direct_posts.app_error", nil, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 		return postsForExport, nil

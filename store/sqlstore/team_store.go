@@ -516,7 +516,7 @@ func (s SqlTeamStore) AnalyticsTeamCount(includeDeleted bool) (int64, *model.App
 }
 
 func (s SqlTeamStore) getTeamMembersWithSchemeSelectQuery() sq.SelectBuilder {
-	return s.getQueryBuilder().
+	return s.GetQueryBuilder().
 		Select(
 			"TeamMembers.*",
 			"TeamScheme.DefaultTeamGuestRole TeamSchemeDefaultGuestRole",

@@ -2728,18 +2728,19 @@ func (s SqlChannelStore) GetChannelMembersForExport(userId string, teamId string
 	return members, nil
 }
 
-func (s SqlChannelStore) GetAllDirectChannelsForExportAfter(limit int, afterId string) ([]*model.DirectChannelForExport, *model.AppError) {
-	var directChannelsForExport []*model.DirectChannelForExport
-	query := s.getQueryBuilder().
-		Select("Channels.*").
-		From("Channels").
-		Where(sq.And{
-			sq.Gt{"Channels.Id": afterId},
-			sq.Eq{"Channels.DeleteAt": int(0)},
-			sq.Eq{"Channels.Type": []string{"D", "G"}},
-		}).
-		OrderBy("Channels.Id").
-		Limit(uint64(limit))
+func (s SqlChannelStore) GetAllDirectChannelsForExportAfter(limit int, afterId string) store.StoreChannel {
+	return store.Do(func(result *store.StoreResult) {
+		var directChannelsForExport []*model.DirectChannelForExport
+		query := s.GetQueryBuilder().
+			Select("Channels.*").
+			From("Channels").
+			Where(sq.And{
+				sq.Gt{"Channels.Id": afterId},
+				sq.Eq{"Channels.DeleteAt": int(0)},
+				sq.Eq{"Channels.Type": []string{"D", "G"}},
+			}).
+			OrderBy("Channels.Id").
+			Limit(uint64(limit))
 
 	queryString, args, err := query.ToSql()
 	if err != nil {
@@ -2750,18 +2751,18 @@ func (s SqlChannelStore) GetAllDirectChannelsForExportAfter(limit int, afterId s
 		return nil, model.NewAppError("SqlChannelStore.GetAllDirectChannelsForExportAfter", "store.sql_channel.get_all_direct.app_error", nil, err.Error(), http.StatusInternalServerError)
 	}
 
-	var channelIds []string
-	for _, channel := range directChannelsForExport {
-		channelIds = append(channelIds, channel.Id)
-	}
-	query = s.getQueryBuilder().
-		Select("u.Username as Username, ChannelId, UserId, cm.Roles as Roles, LastViewedAt, MsgCount, MentionCount, cm.NotifyProps as NotifyProps, LastUpdateAt, SchemeUser, SchemeAdmin, (SchemeGuest IS NOT NULL AND SchemeGuest) as SchemeGuest").
-		From("ChannelMembers cm").
-		Join("Users u ON ( u.Id = cm.UserId )").
-		Where(sq.And{
-			sq.Eq{"cm.ChannelId": channelIds},
-			sq.Eq{"u.DeleteAt": int(0)},
-		})
+		var channelIds []string
+		for _, channel := range directChannelsForExport {
+			channelIds = append(channelIds, channel.Id)
+		}
+		query = s.GetQueryBuilder().
+			Select("u.Username as Username, ChannelId, UserId, cm.Roles as Roles, LastViewedAt, MsgCount, MentionCount, cm.NotifyProps as NotifyProps, LastUpdateAt, SchemeUser, SchemeAdmin, (SchemeGuest IS NOT NULL AND SchemeGuest) as SchemeGuest").
+			From("ChannelMembers cm").
+			Join("Users u ON ( u.Id = cm.UserId )").
+			Where(sq.And{
+				sq.Eq{"cm.ChannelId": channelIds},
+				sq.Eq{"u.DeleteAt": int(0)},
+			})
 
 	queryString, args, err = query.ToSql()
 	if err != nil {
@@ -2813,14 +2814,15 @@ func (s SqlChannelStore) GetChannelsBatchForIndexing(startTime, endTime int64, l
 	return channels, nil
 }
 
-func (s SqlChannelStore) UserBelongsToChannels(userId string, channelIds []string) (bool, *model.AppError) {
-	query := s.getQueryBuilder().
-		Select("Count(*)").
-		From("ChannelMembers").
-		Where(sq.And{
-			sq.Eq{"UserId": userId},
-			sq.Eq{"ChannelId": channelIds},
-		})
+func (s SqlChannelStore) UserBelongsToChannels(userId string, channelIds []string) store.StoreChannel {
+	return store.Do(func(result *store.StoreResult) {
+		query := s.GetQueryBuilder().
+			Select("Count(*)").
+			From("ChannelMembers").
+			Where(sq.And{
+				sq.Eq{"UserId": userId},
+				sq.Eq{"ChannelId": channelIds},
+			})
 
 	queryString, args, err := query.ToSql()
 	if err != nil {

@@ -1,6 +1,8 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+//go:generate go run ../../build/interface_gen.go --implementation SqlSupplier --interface SqlStore --out-file ./store.go --package sqlstore
+
 package sqlstore
 
 import (
@@ -14,6 +16,8 @@ import (
 	"sync/atomic"
 	"time"
 
+    _ "github.com/go-sql-driver/mysql"
+    _ "github.com/lib/pq"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/dyatlov/go-opengraph/opengraph"
 	"github.com/go-sql-driver/mysql"
@@ -1055,7 +1059,7 @@ func (ss *SqlSupplier) DropAllTables() {
 	ss.master.TruncateTables()
 }
 
-func (ss *SqlSupplier) getQueryBuilder() sq.StatementBuilderType {
+func (ss *SqlSupplier) GetQueryBuilder() sq.StatementBuilderType {
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Question)
 	if ss.DriverName() == model.DATABASE_DRIVER_POSTGRES {
 		builder = builder.PlaceholderFormat(sq.Dollar)
