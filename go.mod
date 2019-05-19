@@ -88,19 +88,15 @@ require (
 	github.com/tylerb/graceful v1.2.15
 	github.com/xtgo/uuid v0.0.0-20140804021211-a0b114877d4c // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	go.uber.org/atomic v1.5.1 // indirect
-	go.uber.org/multierr v1.4.0 // indirect
-	go.uber.org/zap v1.13.0
-	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad
-	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
-	golang.org/x/lint v0.0.0-20191125180803-fdd1cda4f05f // indirect
-	golang.org/x/mod v0.2.0 // indirect
-	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa
-	golang.org/x/sys v0.0.0-20200124204421-9fbb57f87de9 // indirect
+	go.uber.org/atomic v1.3.2 // indirect
+	go.uber.org/multierr v1.1.0 // indirect
+	go.uber.org/zap v1.9.1
+	golang.org/x/crypto v0.0.0-20190426145343-a29dc8fdc734
+	golang.org/x/image v0.0.0-20190321063152-3fc05d484e9f
+	golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6
+	golang.org/x/sys v0.0.0-20190429190828-d89cdac9e872 // indirect
 	golang.org/x/text v0.3.2
-	golang.org/x/tools v0.0.0-20200211205636-11eff242d136
-	google.golang.org/genproto v0.0.0-20200128133413-58ce757ed39b // indirect
-	google.golang.org/grpc v1.26.0 // indirect
+	golang.org/x/tools v0.0.0-20190517183331-d88f79806bbd // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/ini.v1 v1.51.1 // indirect
 	gopkg.in/mail.v2 v2.3.1
