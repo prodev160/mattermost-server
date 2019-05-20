@@ -91,15 +91,9 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c.App.SetAcceptLanguage(r.Header.Get("Accept-Language"))
 	c.App.SetPath(r.URL.Path)
 	c.Params = ParamsFromRequest(r)
-	c.Log = c.App.Log()
-
-	// Set the max request body size to be equal to MaxFileSize.
-	// Ideally, non-file request bodies should be smaller than file request bodies,
-	// but we don't have a clean way to identify all file upload handlers.
-	// So to keep it simple, we clamp it to the max file size.
-	// We add a buffer of bytes.MinRead so that file sizes close to max file size
-	// do not get cut off.
-	r.Body = http.MaxBytesReader(w, r.Body, *c.App.Config().FileSettings.MaxFileSize+bytes.MinRead)
+	c.Params.AddCustomParamsFromRequest(r)
+	c.App.Path = r.URL.Path
+	c.Log = c.App.Log
 
 	subpath, _ := utils.GetSubpathFromConfig(c.App.Config())
 	siteURLHeader := app.GetProtocol(r) + "://" + r.Host + subpath
