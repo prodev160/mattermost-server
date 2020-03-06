@@ -907,6 +907,7 @@ func (me *TestHelper) SaveDefaultRolePermissions() map[string][]string {
 	for _, roleName := range []string{
 		"system_user",
 		"system_admin",
+		"system_visitor",
 		"team_user",
 		"team_admin",
 		"channel_user",

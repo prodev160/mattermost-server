@@ -13,6 +13,7 @@ const (
 	SYSTEM_GUEST_ROLE_ID             = "system_guest"
 	SYSTEM_USER_ROLE_ID              = "system_user"
 	SYSTEM_ADMIN_ROLE_ID             = "system_admin"
+	SYSTEM_VISITOR_ROLE_ID           = "system_visitor"
 	SYSTEM_POST_ALL_ROLE_ID          = "system_post_all"
 	SYSTEM_POST_ALL_PUBLIC_ROLE_ID   = "system_post_all_public"
 	SYSTEM_USER_ACCESS_TOKEN_ROLE_ID = "system_user_access_token"
@@ -308,6 +309,21 @@ func MakeDefaultRoles() map[string]*Role {
 
 	roles[SYSTEM_USER_ROLE_ID] = &Role{
 		Name:        "system_user",
+		DisplayName: "authentication.roles.global_user.name",
+		Description: "authentication.roles.global_user.description",
+		Permissions: []string{
+			PERMISSION_LIST_PUBLIC_TEAMS.Id,
+			PERMISSION_JOIN_PUBLIC_TEAMS.Id,
+			PERMISSION_CREATE_DIRECT_CHANNEL.Id,
+			PERMISSION_CREATE_GROUP_CHANNEL.Id,
+			PERMISSION_VIEW_MEMBERS.Id,
+		},
+		SchemeManaged: true,
+		BuiltIn:       true,
+	}
+
+	roles[SYSTEM_VISITOR_ROLE_ID] = &Role{
+		Name:        "system_visitor",
 		DisplayName: "authentication.roles.global_user.name",
 		Description: "authentication.roles.global_user.description",
 		Permissions: []string{

@@ -248,7 +248,7 @@ func (a *App) CreateGuest(user *model.User) (*model.User, *model.AppError) {
 }
 
 func (a *App) createUserOrGuest(user *model.User, guest bool) (*model.User, *model.AppError) {
-	user.Roles = model.SYSTEM_USER_ROLE_ID
+	user.Roles = model.SYSTEM_USER_ROLE_ID + " " + model.SYSTEM_VISITOR_ROLE_ID
 	if guest {
 		user.Roles = model.SYSTEM_GUEST_ROLE_ID
 	}

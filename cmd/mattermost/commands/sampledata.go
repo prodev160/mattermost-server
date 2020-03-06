@@ -377,8 +377,8 @@ func createUser(idx int, teamMemberships int, channelMemberships int, teamsAndCh
 	position := fake.JobTitle()
 
 	username := fmt.Sprintf("%s.%s", strings.ToLower(firstName), strings.ToLower(lastName))
-	roles := "system_user"
-
+	roles := "system_user system_visitor"
+	
 	var password string
 	var email string
 

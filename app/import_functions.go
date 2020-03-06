@@ -406,7 +406,7 @@ func (a *App) importUser(data *UserImportData, dryRun bool) *model.AppError {
 	} else if len(user.Roles) == 0 {
 		// Set SYSTEM_USER roles on newly created users by default.
 		if user.Roles != model.SYSTEM_USER_ROLE_ID {
-			roles = model.SYSTEM_USER_ROLE_ID
+			roles = model.SYSTEM_USER_ROLE_ID + " " + model.SYSTEM_VISITOR_ROLE_ID
 			hasUserRolesChanged = true
 		}
 	}
